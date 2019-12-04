@@ -28,9 +28,17 @@ var cliente = new Twitter({
 io.on("connection", socket => {
   console.log("Nueva conexion");
   socket.on("mensaje", data => {
-    cliente.get("users/search", { q: data.usuario }, function(
-      error, response, r, q) {
-      io.sockets.emit("ubicacion", response[0].location);
-    });
+    
+      cliente.get("users/search", { q: data.usuario }, function(error, response, r) {
+        var person = response[0];
+        if(person != null){
+          io.sockets.emit("ubicacion", person.location);
+        }else{
+          io.sockets.emit("ubicacion", 'Cuenta no encontrada');        
+        }
+      });
+    
+      
+    
   });
 });
